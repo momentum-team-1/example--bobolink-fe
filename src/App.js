@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/* globals localStorage */
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React from 'react'
+import 'tachyons'
+import classnames from 'classnames'
+import Login from './components/Login'
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+
+class App extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      username: localStorage.getItem('bobolink_username') || '',
+      token: localStorage.getItem('bobolink_auth_token')
+    }
+
+    this.setUserCredentials = this.setUserCredentials.bind(this)
+  }
+
+  setUserCredentials (username, token) {
+    this.setState({
+      username: username,
+      token: token
+    })
+    localStorage.set('bobolink_username', username)
+    localStorage.set('bobolink_auth_token', token)
+  }
+
+  handleLogout (event) {
+    event.preventDefault()
+
+    this.setState({ token: null, username: '' })
+    localStorage.removeItem('bobolink_username')
+    localStorage.removeItem('bobolink_auth_token')
+  }
+
+  render () {
+    return (
+      <div className='App bg-light-yellow min-vh-100 pt5'>
+        <div className={classnames('bg-white', 'pa3', 'center', 'shadow-1', 'mw6')}>
+          {
+            this.state.token
+              ? (
+                <div>
+                  <h2>Hello, {this.state.username}!</h2>
+                  <button onClick={this.handleLogout}>Log out</button>
+                </div>
+              )
+              : (
+                <Login setUserCredentials={this.setUserCredentials} />
+              )
+          }
+        </div>
+      </div>
+    )
+  }
 }
 
-export default App;
+export default App
