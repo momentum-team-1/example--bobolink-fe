@@ -4,8 +4,11 @@ import React from 'react'
 import 'tachyons'
 import classnames from 'classnames'
 import Login from './components/Login'
-import Links from './components/Links'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import MyLinksContainer from './components/MyLinksContainer'
+import AllLinksContainer from './components/AllLinksContainer'
+import FollowedLinksContainer from './components/FollowedLinksContainer'
+import Logout from './components/Logout'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
 class App extends React.Component {
   constructor () {
@@ -28,9 +31,7 @@ class App extends React.Component {
     localStorage.setItem('bobolink_auth_token', token)
   }
 
-  handleLogout (event) {
-    event.preventDefault()
-
+  handleLogout () {
     this.setState({ token: null, username: '' })
     localStorage.removeItem('bobolink_username')
     localStorage.removeItem('bobolink_auth_token')
@@ -45,8 +46,16 @@ class App extends React.Component {
               this.state.token
                 ? (
                   <div>
-                    <p>Hi, {this.state.username}! <button onClick={this.handleLogout}>Log out</button></p>
-                    <Links authToken={this.state.token} />
+                    <p>Hi, {this.state.username}! <Link to='/logout/'>Log out</Link></p>
+                    <p>
+                      <Link to='/'>My links</Link> | <Link to='/followed/'>Links from users I follow</Link> | <Link to='/all/'>Links from all users</Link>
+                    </p>
+                    <Switch>
+                      <Route exact path='/'><MyLinksContainer authToken={this.state.token} /></Route>
+                      <Route path='/all/'><AllLinksContainer authToken={this.state.token} /></Route>
+                      <Route path='/followed/'><FollowedLinksContainer authToken={this.state.token} /></Route>
+                      <Route path='/logout/'><Logout onLogout={this.handleLogout} /></Route>
+                    </Switch>
                   </div>
 
                 )
