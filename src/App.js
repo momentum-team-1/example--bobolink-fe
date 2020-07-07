@@ -41,6 +41,17 @@ class App extends React.Component {
       <Router>
         <div className='App bg-light-yellow min-vh-100 pt5'>
           <div className={classnames('bg-white', 'pa3', 'center', 'shadow-1', 'mw6')}>
+            {
+              this.state.token
+                ? (
+                  <div>
+                    <p>Hi, {this.state.username}! <button onClick={this.handleLogout}>Log out</button></p>
+                    <Links authToken={this.state.token} />
+                  </div>
+
+                )
+                : <Login setUserCredentials={this.setUserCredentials} />
+            }
 
           </div>
         </div>
