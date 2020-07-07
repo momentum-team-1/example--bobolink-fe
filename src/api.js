@@ -10,3 +10,11 @@ export function getToken (username, password) {
     password: password
   }).then(res => res.data.auth_token)
 }
+
+export function getLinkData (token) {
+  return request.get('/links', {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  }).then(res => res.data)
+}

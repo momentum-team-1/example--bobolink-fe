@@ -4,6 +4,7 @@ import React from 'react'
 import 'tachyons'
 import classnames from 'classnames'
 import Login from './components/Login'
+import Links from './components/Links'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
 class App extends React.Component {
@@ -15,6 +16,7 @@ class App extends React.Component {
     }
 
     this.setUserCredentials = this.setUserCredentials.bind(this)
+    this.handleLogout = this.handleLogout.bind(this)
   }
 
   setUserCredentials (username, token) {
@@ -22,8 +24,8 @@ class App extends React.Component {
       username: username,
       token: token
     })
-    localStorage.set('bobolink_username', username)
-    localStorage.set('bobolink_auth_token', token)
+    localStorage.setItem('bobolink_username', username)
+    localStorage.setItem('bobolink_auth_token', token)
   }
 
   handleLogout (event) {
@@ -36,22 +38,24 @@ class App extends React.Component {
 
   render () {
     return (
-      <div className='App bg-light-yellow min-vh-100 pt5'>
-        <div className={classnames('bg-white', 'pa3', 'center', 'shadow-1', 'mw6')}>
-          {
-            this.state.token
-              ? (
-                <div>
-                  <h2>Hello, {this.state.username}!</h2>
-                  <button onClick={this.handleLogout}>Log out</button>
-                </div>
-              )
-              : (
-                <Login setUserCredentials={this.setUserCredentials} />
-              )
-          }
+      <Router>
+        <div className='App bg-light-yellow min-vh-100 pt5'>
+          <div className={classnames('bg-white', 'pa3', 'center', 'shadow-1', 'mw6')}>
+            {
+              this.state.token
+                ? (
+                  <div>
+                    <p>Hi, {this.state.username}! <button onClick={this.handleLogout}>Log out</button></p>
+                    <Links authToken={this.state.token} />
+                  </div>
+
+                )
+                : <Login setUserCredentials={this.setUserCredentials} />
+            }
+
+          </div>
         </div>
-      </div>
+      </Router>
     )
   }
 }
